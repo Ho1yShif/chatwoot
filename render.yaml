@@ -11,7 +11,7 @@ projects:
             branch: render-deploy
             dockerfilePath: ./docker/Dockerfile
             dockerContext: .
-            dockerCommand: sh -c "bundle exec rails ip_lookup:setup && bundle exec rails server -b 0.0.0.0 -p $PORT"
+            dockerCommand: sh -c "bundle exec rails ip_lookup:setup && bundle exec rails server -p $PORT"
             preDeployCommand: POSTGRES_STATEMENT_TIMEOUT=600s bundle exec rails db:chatwoot_prepare
             healthCheckPath: /health
             envVars:
@@ -27,8 +27,6 @@ projects:
                   property: connectionString
               - key: WEB_CONCURRENCY
                 value: "2"
-              - key: RAILS_MAX_THREADS
-                value: "5"
 
           - type: worker
             name: chatwoot-worker
@@ -50,8 +48,6 @@ projects:
                   type: keyvalue
                   name: chatwoot-redis
                   property: connectionString
-              - key: SIDEKIQ_CONCURRENCY
-                value: "10"
 
           - type: keyvalue
             name: chatwoot-redis
@@ -72,10 +68,6 @@ projects:
         envVarGroups:
           - name: chatwoot-shared
             envVars:
-              - key: RAILS_ENV
-                value: production
-              - key: NODE_ENV
-                value: production
               - key: INSTALLATION_ENV
                 value: docker
               - key: SECRET_KEY_BASE
@@ -83,8 +75,6 @@ projects:
               - key: FRONTEND_URL
                 sync: false
               - key: FORCE_SSL
-                value: "true"
-              - key: RAILS_LOG_TO_STDOUT
                 value: "true"
               - key: ENABLE_ACCOUNT_SIGNUP
                 value: "false"
@@ -104,8 +94,6 @@ projects:
                 sync: false
               - key: SMTP_ADDRESS
                 sync: false
-              - key: SMTP_PORT
-                value: "587"
               - key: SMTP_USERNAME
                 sync: false
               - key: SMTP_PASSWORD
